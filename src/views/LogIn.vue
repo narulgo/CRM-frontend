@@ -71,14 +71,6 @@
                     }
                 }
                 try {
-                    const response = await axios.get('/api/users/me')
-                    this.$store.commit('setUser', {'id': response.data.id, 'username': response.data.username})
-                    localStorage.setItem('username', response.data.username)
-                    localStorage.setItem('userid', response.data.id)
-                } catch(error) {
-                        console.log(error)
-                    }
-                try {
                     const response = await axios.get('/api/teams/get_my_team/')
                     this.$store.commit('setTeam', {'id': response.data.id, 'name': response.data.name})
                     this.$router.push('/dashboard/account')
