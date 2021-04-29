@@ -51,8 +51,8 @@
                         duration: 2000,
                         position: 'bottom-right',
                         })
-                        this.$store.commit('setTeam', {'id': response.data.id, 'name': this.name})
-                        this.$router.push('/dashboard')
+                    this.$store.commit('setTeam', {'id': response.data.id, 'name': this.name})
+                    this.$router.push('/dashboard')
                 } catch(error) {
                         console.log(error)
                     }
