@@ -60,6 +60,9 @@
                     this.$store.commit('setToken', token)
                     axios.defaults.headers.common['Authorization'] = 'Token ' + token
                     localStorage.setItem('token', token)
+                    this.$store.commit('setUser', {'id': response.data.id, 'username': response.data.username})
+                    localStorage.setItem('username', response.data.username)
+                    localStorage.setItem('userid', response.data.id)
                 } catch(error) {
                     console.log(error)
                     if (error.response) {
