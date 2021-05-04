@@ -52,7 +52,7 @@ export default {
                 const response = await axios.get('/api/teams/get_my_team/')
                 this.team = response.data
             } catch(error) {
-                    console.log(error)
+                    console.log(JSON.stringify(error))
                 }
             this.$store.commit('setIsLoading', false)
         }

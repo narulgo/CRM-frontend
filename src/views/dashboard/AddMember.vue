@@ -74,9 +74,8 @@ export default {
                     username: this.username,
                     password: this.password1
                 }
-                const emailData = {'email': this.username}
                 try {
-                    const response = await axios.post('/api/teams/add_member/', emailData, formData)
+                    const response = await axios.post('/api/users/', formData)
                     toast({
                             message: 'The member was added',
                             type: 'is-success',
@@ -85,16 +84,28 @@ export default {
                             duration: 2000,
                             position: 'bottom-right',
                         })
-                    this.$router.push({'name': 'Team'})
-                } catch(error) {
-                    if (error.response) {
-                        for (const property in error.response.data) {
-                            this.errors.push(`${property}: ${error.response.data[property]}`)
-                        }
-                    } else if (error.message) {
-                        this.errors.push('Something went wrong. Please try again!')
+                    const emailData = {'email': this.username}
+                    try {
+                        const response = await axios.post('/api/teams/add_member/', emailData)
+                        this.$router.push({'name': 'Team'})
+                    } catch(error) {
+                                if (error.response) {
+                                    for (const property in error.response.data) {
+                                        this.errors.push(`${property}: ${error.response.data[property]}`)
+                                    }
+                                } else if (error.message) {
+                                    this.errors.push('Something went wrong. Please try again!')
+                                }
                             }
+                    } catch(error) {
+                        if (error.response) {
+                            for (const property in error.response.data) {
+                                this.errors.push(`${property}: ${error.response.data[property]}`)
+                            }
+                        } else if (error.message) {
+                            this.errors.push('Something went wrong. Please try again!')
                         }
+                    }
                 this.$store.commit('setIsLoading', false)
             }
         }

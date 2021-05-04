@@ -60,9 +60,6 @@
                     this.$store.commit('setToken', token)
                     axios.defaults.headers.common['Authorization'] = 'Token ' + token
                     localStorage.setItem('token', token)
-                    this.$store.commit('setUser', {'id': response.data.id, 'username': response.data.username})
-                    localStorage.setItem('username', response.data.username)
-                    localStorage.setItem('userid', response.data.id)
                 } catch(error) {
                     console.log(error)
                     if (error.response) {
@@ -73,6 +70,14 @@
                         this.errors.push('Something went wrong. Please try again!')
                     }
                 }
+                try {
+                    const response = await axios.get('/api/users/')
+                    this.$store.commit('setUser', {'id': response.data.id, 'username': response.data.username})
+                    localStorage.setItem('username', response.data.username)
+                    localStorage.setItem('userid', response.data.id)
+                } catch(error) {
+                        console.log(error)
+                    }
                 try {
                     const response = await axios.get('/api/teams/get_my_team/')
                     this.$store.commit('setTeam', {'id': response.data.id, 'name': response.data.name})
