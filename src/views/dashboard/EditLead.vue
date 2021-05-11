@@ -85,6 +85,24 @@
                     </div>
 
                     <div class="field">
+                        <label>Assigned to</label>
+                        <div class="control">
+                            <div class="select">
+                                <select v-model="lead.assigned_to">
+                                    <option value="" selected>Select member</option>
+                                    <option
+                                        v-for="user in users"
+                                        v-bind:key="user.id"
+                                        v-bind:value="user.id"
+                                    >
+                                        {{ user.username }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
                         <div class="control">
                             <button class="button is-success">Update</button>
                         </div>
@@ -102,13 +120,24 @@
         name: 'EditLead',
         data() {
             return {
-                lead: {}
+                lead: {},
+                users: {}
             }
         },
         mounted() {
-            this.getLead()
+            this.getLead(),
+            this.getUser()
         },
         methods: {
+            async getUser() {
+                try {
+                    const response = await axios.get(`/api/users/`)
+                    this.users = response.data
+                    console.log(this.users)
+                    } catch(error) {
+                        console.log(error)
+                    }
+            },
             async getLead() {
                 this.$store.commit('setIsLoading', true)
                 const leadID = this.$route.params.id
