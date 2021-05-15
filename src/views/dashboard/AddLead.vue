@@ -85,6 +85,24 @@
                     </div>
 
                     <div class="field">
+                        <label>Assigned to</label>
+                        <div class="control">
+                            <div class="select">
+                                <select v-model="assigned_to">
+                                    <option value="" selected>Select member</option>
+                                    <option
+                                        v-for="user in users"
+                                        v-bind:key="user.id"
+                                        v-bind:value="user.id"
+                                    >
+                                        {{ user.username }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field">
                         <div class="control">
                             <button class="button is-success">Submit</button>
                         </div>
@@ -110,7 +128,9 @@
                 confidence: 0,
                 website: '',
                 status: 'new',
-                priority: 'medium'
+                priority: 'medium',
+                assigned_to: null,
+                users: []
             }
         },
         methods: {
@@ -125,7 +145,8 @@
                     estimated_value: this.estimated_value,
                     confidence: this.confidence,
                     status: this.status,
-                    priority: this.priority
+                    priority: this.priority,
+                    assigned_to: this.assigned_to
                 }
                 try {
                     const response = await axios.post('/api/leads/', lead)
@@ -137,12 +158,17 @@
                         duration: 2000,
                         position: 'bottom-right',
                     })
+                    console.log(this.assigned_to)
                     this.$router.push('/dashboard/leads')
                     } catch(error) {
                         console.log(error)
                     }
                 this.$store.commit('setIsLoading', false)
             }
-        }
+        },
+        async created () {
+            const response = await fetch('http://127.0.0.1:8000/api/users/')
+            this.users = await response.json()
+  }
     }
 </script>
