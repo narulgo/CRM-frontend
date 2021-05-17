@@ -91,11 +91,11 @@
                                 <select v-model="lead.assigned_to">
                                     <option value="" selected>Select member</option>
                                     <option
-                                        v-for="user in users"
-                                        v-bind:key="user.id"
-                                        v-bind:value="user.id"
+                                        v-for="member in team.members"
+                                        v-bind:key="member.id"
+                                        v-bind:value="member.id"
                                     >
-                                        {{ user.username }}
+                                        {{ member.username }}
                                     </option>
                                 </select>
                             </div>
@@ -121,18 +121,20 @@
         data() {
             return {
                 lead: {},
-                users: {}
+                team: {
+                    members: []
+                }
             }
         },
         mounted() {
             this.getLead(),
-            this.getUser()
+            this.getTeam()
         },
         methods: {
-            async getUser() {
+            async getTeam() {
                 try {
-                    const response = await axios.get(`/api/users/`)
-                    this.users = response.data
+                    const response = await axios.get(`/api/teams/get_my_team/`)
+                    this.team = response.data
                     console.log(this.users)
                     } catch(error) {
                         console.log(error)
