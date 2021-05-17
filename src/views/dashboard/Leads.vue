@@ -26,7 +26,7 @@
                                 <td>{{ lead.company }}</td>
                                 <td>{{ lead.contact_person }}</td>
                                 <td>
-                                    <template v-if="lead.assigned_to">{{ lead.assigned_to.username }}</template>
+                                    <template v-if="lead.assigned_to">{{ lead.assigned_to }}</template>
                                 </td>
                                 <td>{{ lead.status }}</td>
                                 <td>

@@ -91,11 +91,11 @@
                                 <select v-model="assigned_to">
                                     <option value="" selected>Select member</option>
                                     <option
-                                        v-for="user in users"
-                                        v-bind:key="user.id"
-                                        v-bind:value="user.id"
+                                        v-for="lead in leads"
+                                        v-bind:key="lead.id"
+                                        v-bind:value="lead"
                                     >
-                                        {{ user.username }}
+                                        {{ lead.assigned_to }}
                                     </option>
                                 </select>
                             </div>
@@ -130,8 +130,11 @@
                 status: 'new',
                 priority: 'medium',
                 assigned_to: null,
-                users: []
+                leads: []
             }
+        },
+        mounted() {
+            this.getLeads()
         },
         methods: {
             async submitForm() {
@@ -159,16 +162,23 @@
                         position: 'bottom-right',
                     })
                     console.log(this.assigned_to)
+                    console.log(this.leads)
                     this.$router.push('/dashboard/leads')
                     } catch(error) {
                         console.log(error)
                     }
                 this.$store.commit('setIsLoading', false)
+            },
+            async getLeads() {
+                this.$store.commit('setIsLoading', true)
+                try { 
+                    const response = await axios.get('/api/leads/')
+                    this.leads = response.data
+                    } catch(error){
+                        console.log(error)
+                    }
+                this.$store.commit('setIsLoading', false)
             }
-        },
-        async created () {
-            const response = await fetch('http://127.0.0.1:8000/api/users/')
-            this.users = await response.json()
-  }
+        }
     }
 </script>
