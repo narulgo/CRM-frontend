@@ -4,7 +4,17 @@
             <div class="column is-12">
                 <h1 class="title">Clients</h1>
 
-                <router-link to="/dashboard/clients/add">Add client</router-link>
+                <router-link 
+                    to="/dashboard/clients/add"
+                    v-if="$store.state.team.max_clients > num_clients"
+                >Add client</router-link>
+
+                <div
+                    class="notification is-danger"
+                    v-else
+                >
+                    You have reached the top of your limitations. Please upgrade!
+                </div>
 
                 <hr>
 
@@ -69,7 +79,8 @@
                 showNextButton: false,
                 showPreviousButton: false,
                 currentPage: 1,
-                query: ''
+                query: '',
+                num_clients: 0
             }
         },
         mounted() {
@@ -88,6 +99,14 @@
                 this.$store.commit('setIsLoading', true)
                 this.showNextButton = false
                 this.showPreviousButton = false
+
+                try {
+                    const response = await axios.get(`/api/clients/`)
+                    this.num_clients = response.data.count
+                } catch(error){
+                    console.log(error)
+                }
+
                 try {
                     const response = await axios.get(`/api/clients/?page=${this.currentPage}&search=${this.query}`)
                     this.clients = response.data.results
