@@ -6,16 +6,7 @@
 
                 <router-link 
                     to="/dashboard/clients/add"
-                    v-if="$store.state.team.max_clients > num_clients"
                 >Add client</router-link>
-
-                <div
-                    class="notification is-danger"
-                    v-else
-                >
-                    You have reached the top of your limitations. Please upgrade!
-                </div>
-
                 <hr>
 
                 <form @submit.prevent="getClients">

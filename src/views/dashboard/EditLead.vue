@@ -91,11 +91,11 @@
                                 <select v-model="lead.assigned_to">
                                     <option value="" selected>Select member</option>
                                     <option
-                                        v-for="member in team.members"
-                                        v-bind:key="member.id"
-                                        v-bind:value="member.id"
+                                        v-for="user in users"
+                                        v-bind:key="user.id"
+                                        v-bind:value="user.id"
                                     >
-                                        {{ member.username }}
+                                        {{ user.username }}
                                     </option>
                                 </select>
                             </div>
@@ -114,62 +114,60 @@
 </template>
 
 <script>
-    import axios from 'axios'
-    import { toast } from 'bulma-toast'
-    export default {
-        name: 'EditLead',
-        data() {
-            return {
-                lead: {},
-                team: {
-                    members: []
-                }
-            }
-        },
-        mounted() {
-            this.getLead(),
-            this.getTeam()
-        },
-        methods: {
-            async getTeam() {
-                try {
-                    const response = await axios.get(`/api/teams/get_my_team/`)
-                    this.team = response.data
-                    console.log(this.users)
-                    } catch(error) {
-                        console.log(error)
-                    }
-            },
-            async getLead() {
-                this.$store.commit('setIsLoading', true)
-                const leadID = this.$route.params.id
-                try {
-                    const response = await axios.get(`/api/leads/${leadID}/`)
-                    this.lead = response.data
-                    } catch(error) {
-                        console.log(error)
-                    }
-                this.$store.commit('setIsLoading', false)
-            },
-            async submitForm() {
-                this.$store.commit('setIsLoading', true)
-                const leadID = this.$route.params.id
-                try {
-                    const response = await axios.patch(`/api/leads/${leadID}/`, this.lead)
-                    toast({
-                        message: 'The lead was updated',
-                        type: 'is-success',
-                        dismissible: true,
-                        pauseOnHover: true,
-                        duration: 2000,
-                        position: 'bottom-right',
-                    })
-                    this.$router.push(`/dashboard/leads/${leadID}`)
-                    } catch(error) {
-                        console.log(error)
-                    }
-                this.$store.commit('setIsLoading', false)
-            }
-        }
+import axios from 'axios'
+import { toast } from 'bulma-toast'
+export default {
+  name: 'EditLead',
+  data() {
+    return {
+      lead: {},
+      users: {}
     }
+  },
+  mounted() {
+    this.getUser(),
+    this.getLead()
+  },
+  methods: {
+    async getUser() {
+      try {
+        const response = await axios.get(`/api/users/`)
+        this.users = response.data
+        console.log(this.users)
+        } catch(error) {
+            console.log(error)
+            }
+        },
+    async getLead() {
+      this.$store.commit('setIsLoading', true)
+      const leadID = this.$route.params.id
+      try {
+        const response = await axios.get(`/api/leads/${leadID}/`)
+        this.lead = response.data
+      } catch(error) {
+          console.log(error)
+        }
+      this.$store.commit('setIsLoading', false)
+    },
+    async submitForm() {
+      this.$store.commit('setIsLoading', true)
+      const leadID = this.$route.params.id
+      try {
+        const response = await axios.patch(`/api/leads/${leadID}/`, this.lead)
+        toast({
+          message: 'The lead was updated',
+          type: 'is-success',
+          dismissible: true,
+          pauseOnHover: true,
+          duration: 2000,
+          position: 'bottom-right',
+          })
+        this.$router.push(`/dashboard/leads/${leadID}`)
+      } catch(error) {
+          console.log(error)
+        }
+      this.$store.commit('setIsLoading', false)
+      }
+    }
+}
 </script>

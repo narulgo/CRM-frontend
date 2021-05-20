@@ -83,25 +83,6 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="field">
-                        <label>Assigned to</label>
-                        <div class="control">
-                            <div class="select">
-                                <select v-model="assigned_to">
-                                    <option value="" selected>Select member</option>
-                                    <option
-                                        v-for="lead in leads"
-                                        v-bind:key="lead.id"
-                                        v-bind:value="lead"
-                                    >
-                                        {{ lead.assigned_to }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="field">
                         <div class="control">
                             <button class="button is-success">Submit</button>
