@@ -4,7 +4,10 @@
             <div class="column is-12">
                 <h1 class="title">{{ client.name }}</h1>
 
-                <router-link :to="{ name: 'EditClient', params: { id: client.id }}" class="button is-light">Edit</router-link>
+                <div class="buttons">
+                    <router-link :to="{ name: 'EditClient', params: { id: client.id }}" class="button is-light">Edit</router-link>
+                    <button class="button is-danger" @click="deleteClient">Delete</button>
+                </div>
             </div>
 
             <div class="column is-6">
@@ -65,6 +68,18 @@
             this.getClient()
         },
         methods: {
+            async deleteClient() {
+                this.$store.commit('setIsLoading', true)
+                const clientID = this.$route.params.id
+                try {
+                    const response = await axios.post(`/api/clients/delete_client/${clientID}/`)
+                    console.log(response.data)
+                    this.$router.push('/dashboard/clients')
+                } catch(error) {
+                    console.log(error)
+                }
+                this.$store.commit('setIsLoading', false)
+            },
             async getClient() {
                 this.$store.commit('setIsLoading', true)
                 const clientID = this.$route.params.id

@@ -40,6 +40,11 @@
                     <button @click="subscribe('bigteam')" class="button is-primary">Subscribe</button>
                 </div>
             </div>
+            <hr>
+
+            <div class="column is-12">
+                <button @click="cancelPlan()" class="button is-danger">Cancel plan</button>
+            </div>
         </div>
     </div>
 </template>
@@ -51,20 +56,29 @@ export default {
     name: 'Plans',
     data() {
         return {
+            pub_key: '',
+            stripe: null
         }
     },
-    mounted() {
+    async mounted() {
+        await this.getPubKey()
+        this.stripe = Stripe(this.pub_key)
     },
     methods: {
-        async subscribe(plan) {
+        async getPubKey() {
             this.$store.commit('setIsLoading', true)
-            const data = {
-                plan: plan
-            }
             try {
-                const response = await axios.post(`/api/teams/upgrade_plan/`, data)
-                console.log('Upgraded plan')
-                console.log(response.data)
+                const response = await axios.get(`/api/stripe/get_stripe_pub_key/`)
+                this.pub_key = response.data.pub_key
+            } catch(error) {
+                console.log(error)
+                }
+            this.$store.commit('setIsLoading', false)
+        },
+        async cancelPlan() {
+            this.$store.commit('setIsLoading', true)
+            try {
+                const response = await axios.post('/api/teams/cancel_plan/')
                 this.$store.commit('setTeam', {
                     'id': response.data.id, 
                     'name': response.data.name,
@@ -73,7 +87,7 @@ export default {
                     'max_clients': response.data.plan.max_clients
                 })
                 toast({
-                    message: 'The plan was changed!',
+                    message: 'The plan was cancelled!',
                     type: 'is-success',
                     dismissible: true,
                     pauseOnHover: true,
@@ -81,6 +95,20 @@ export default {
                     position: 'bottom-right',
                 })
                 this.$router.push('/dashboard/team')
+            } catch(error) {
+                console.log(error)
+            }
+            this.$store.commit('setIsLoading', false)
+        },
+        async subscribe(plan) {
+            this.$store.commit('setIsLoading', true)
+            const data = {
+                plan: plan
+            }
+            try {
+                const response = await axios.post(`/api/stripe/create_checkout_session/`, data)
+                console.log(response)
+                return this.stripe.redirectToCheckout({sessionId: response.data.sessionId})
             } catch(error) {
                 console.log(error)
             }
